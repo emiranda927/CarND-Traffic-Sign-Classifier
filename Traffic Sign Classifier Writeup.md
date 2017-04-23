@@ -61,7 +61,6 @@ The following is a summary of the pre-processing steps I took:
 | Grayscale			    | Converted augmented data to grayscale			|
 | Normalization			| Used sklearn preprocessing.scale to normalize	|
 | Shuffle				| Shuffled augmented dataset					|
-|						|												|
 
 When training, I envisioned that the CNN would benefit from having more generalized images to train on. Denoising is a common operation used in image preprocessing which I utilized to accomplish this. I applied a median filter (ndimage.median_filter) to denoise the training set images and blur them slightly. I chose a median filter over a gaussian blur because the median filter preserves the edges of the image better than a guassian filter. I added these filtered images directly onto the original dataset as an extension of what we already had. The one conern I have with employing the denoise operation are the computational resources required with increasing dataset sizes
 
@@ -74,15 +73,6 @@ The results of employing the micro-rotation operations was in increase in the da
 The last two steps were to transfrom the augmented dataset to grayscale and normalize to mean 0 and unit standard deviation ([preprocessing.scale()](http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.scale.html)). The best reason to transfrom the dataset into grayscale is to reduce the computational load (going from 3 channels to 1) without a noticeable loss in performance. It's been shown that color has a negligible impact on training CNN's.
 
 The result of augmenting the dataset, compared with simply normalizing the images, was an increase from 94.3% validation accuracy to 99.1% validation accuracy.
-
-Here is an example of a traffic sign image before and after grayscaling.
-
-![alt text][image2]
-
-
-Here is an example of an original image and an augmented image:
-
-![alt text][image3]
 
 ####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
@@ -121,13 +111,6 @@ My final model results were:
 * validation set accuracy of 99.1% 
 * test set accuracy of 93.8%
 
-If an iterative approach was chosen:
-* What was the first architecture that was tried and why was it chosen?
-* What were some problems with the initial architecture?
-* How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
-* Which parameters were tuned? How were they adjusted and why?
-* What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
-
 My initial model was based on what I learned in the LeNet lab. As such, I stuck with the LeNet-5 architecture on my first run-through which provided approximately 91% validation set accuracy. The first architecture included 2x Convolution, 2x Max Pooling, and 3x Fully Connected layers. Normalizing and converting my training set to grayscale bumped up the validation accuracy to approximately 94%.
 
 The next iteration was mostly spent tuning hyperparameters like Epoch Size, Batch Size, and learning rate. I learned that the number of Epochs past 25 had very little gain on validation accuracy, but reducing the batch size actually did slightly improve my accuracy by ~1%. Tuning the learning rate away from 0.001 only caused my model to diverge and become less accurate so I mostly left that alone. It seemed that I needed to take other steps to improve my model past 94%.
@@ -140,7 +123,7 @@ That is when I turned to dropout. For a while, I felt as if dropout wasn't doing
 
 Here are five German traffic signs that I found on the web:
 
-![](https://github.com/emiranda927/CarND-Traffic-Sign-Classifier/blob/master/Visualizations/DownloadedTrafficSigns.png) 
+![](https://github.com/emiranda927/CarND-Traffic-Sign-Classifier/blob/master/Visualizations/DownloadedTrafficSigns.PNG) 
 
 I chose these images because I felt like they were the most similar to what the dataset had. My biggest concern was the 3rd image: the no passing sign. The picture seemed to be taken at dusk and had a weird light artifact in the bottom corner of the image. Otherwise, I felt these images were very "well behaved" and should be easily classified by the model.
 
@@ -159,7 +142,7 @@ Here are the results of the prediction:
 
 The model was able to correctly guess 5 of the 5 traffic signs, which gives an accuracy of 100%. I believe this is inline with the test accuracy of 93.8% simply because of how well-behaved the images I chose were. If a more challenging image was used in place of the stop sign, for example, the classifier accuracy could have dropped to 80%. In fact, I tried just that by introducing a "No Entry" sign (see below) that was positioned behind another sign in place of the stop sign and the classifier was not able to predict it correctly.
 
-![] (https://github.com/emiranda927/CarND-Traffic-Sign-Classifier/blob/master/no_entry.png)
+![](https://github.com/emiranda927/CarND-Traffic-Sign-Classifier/blob/master/no_entry.png)
 
 The classifier though the entry sign was most likely a "Yield Sign", which is triangular in shape. Because the No-Entry sign is behind a triangular sign, this introduces an interesting problem for the classifier. Namely, how do we classify an image in this situation if it can fool the classifier into thinking it has a different shape? That is one limitation and difficulty I encountered while doing this excercise.
 
