@@ -54,7 +54,7 @@ I used the pandas and numpy libraries (.shape and np.unique) to calculate summar
 
 Here is an exploratory visualization of the data set. It is a bar chart showing how the data ...
 
-![alt text][image1]: ./Visualizations/Original_DataSet_Vis.png "Dataset Frequency Distribution"
+[image1]: ./Visualizations/Original_DataSet_Vis.png "Dataset Frequency Distribution"
 
 ###Design and Test a Model Architecture
 
