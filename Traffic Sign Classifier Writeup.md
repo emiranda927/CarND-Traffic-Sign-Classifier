@@ -63,13 +63,15 @@ The following is a summary of the pre-processing steps I took:
 | Shuffle				| Shuffled augmented dataset					|
 |						|												|
 
-When training, I envisioned that the CNN would benefit from having more generalized images to train on. Denoising is a common operation used in image preprocessing. In order to facilitate this, I applied a median filter (ndimage.median_filter) to smooth the edges of the training set images and blur them slightly. I chose a median filter over a gaussian blur because the median filter preserves the edges of the image better than a guassian filter. I added these filtered images directly onto the original dataset as an extension of what we already had. The one conern I have with employing the denoise operation are the computational resources required with increasing dataset sizes
+When training, I envisioned that the CNN would benefit from having more generalized images to train on. Denoising is a common operation used in image preprocessing which I utilized to accomplish this. I applied a median filter (ndimage.median_filter) to denoise the training set images and blur them slightly. I chose a median filter over a gaussian blur because the median filter preserves the edges of the image better than a guassian filter. I added these filtered images directly onto the original dataset as an extension of what we already had. The one conern I have with employing the denoise operation are the computational resources required with increasing dataset sizes
 
 The next problem I wanted to tackle was the issue of training example class disparity. In order to rectify this, I applied random "micro-rotations" to all images in a class until each Class-ID had 5000 images in the training set. The reason I used micro-rotations (as opposed to vertical/horizontal flipping) was to preserve the integrity of every training example. I could guarantee the invariance of each image while avoiding the introduction of redundant examples into the training set. This technique can be applied to any image used in training a convolutional neural network without having to split off select training id's that only work with specific geometric transformations.
 
-The results of employing the micro-rotation operations was in increase in the dataset from 27,839 examples to 215,000 training examples. 
+The results of employing the micro-rotation operations was in increase in the dataset from 27,839 examples to 215,000 training examples. Below is the frequency distribution of the augmented dataset:
 
-The last two steps were to transfrom the augmented dataset to grayscale and normalize to mean 0 and unit standard deviation. The best reason to transfrom the dataset into grayscale is to reduce the computational load (going from 3 channels to 1) without a noticeable loss in performance. It's been shown that color has a negligible impact on training CNN's.
+![](https://github.com/emiranda927/CarND-Traffic-Sign-Classifier/blob/master/Visualizations/Augmented_DataSet_Vis.png) 
+
+The last two steps were to transfrom the augmented dataset to grayscale and normalize to mean 0 and unit standard deviation ([preprocessing.scale()](http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.scale.html)). The best reason to transfrom the dataset into grayscale is to reduce the computational load (going from 3 channels to 1) without a noticeable loss in performance. It's been shown that color has a negligible impact on training CNN's.
 
 The result of augmenting the dataset, compared with simply normalizing the images, was an increase from 94.3% validation accuracy to 99.1% validation accuracy.
 
@@ -77,18 +79,10 @@ Here is an example of a traffic sign image before and after grayscaling.
 
 ![alt text][image2]
 
-As a last step, I normalized the image data because ...
-
-I decided to generate additional data because ... 
-
-To add more data to the the data set, I used the following techniques because ... 
 
 Here is an example of an original image and an augmented image:
 
 ![alt text][image3]
-
-The difference between the original data set and the augmented data set is the following ... 
-
 
 ####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
@@ -96,27 +90,36 @@ My final model consisted of the following layers:
 
 | Layer         	|     Description	        					| 
 |:-----------------:|:---------------------------------------------:| 
-| Input         	| 32x32x3 RGB image   							| 
-| Convolution 3x3   | 1x1 stride, same padding, outputs 32x32x64 	|
+| Input         	| 32x32x3 RGB image   							|
+| Pre-Processing   	| 32x32x1 Grayscale image   					|
+| Convolution 		| 1x1 stride, valid padding, outputs 28x28x6 	|
 | RELU				|												|
-| Max pooling	    | 2x2 stride,  outputs 16x16x64 				|
-| Convolution 3x3	| etc.      									|
-| Fully connected	| etc.        									|
-| Softmax			| etc.        									|
-|					|												|
+| Max pooling	    | 2x2 stride,  outputs 14x14x6	 				|
+| Convolution 		| 1x1 stride, valid padding, outputs 10x10x16 	|
+| RELU				|												|
+| Max pooling	    | 2x2 stride,  outputs 5x5x16	 				|
+| Flatten			| Input 5x5x16, outputs 400						|
+| Fully connected	| Input 400, outputs 120						|
+| RELU				| 	        									|
+| Fully Connected	| Input 120, outputs 84							|
+| RELU				| 	        									|
+| Dropout			| 55% keep probability							|
+| FC/Logits			| Input 84, outputs # classes					|
  
-
+This is a pretty standard LeNet architecture. The biggest change within the atchitecture is choosing to include Dropout on the second fully connected layer. Dropout slightly improved the accuracy of the training model, but greatly improved the convergence and prevented the model from making large jumps in validation accuracy.
 
 ####3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
-To train the model, I used an ....
+To train the model, I used 25 Epochs and a batch size of 128. My initial training rounds used a batch size of 64, but the final augmented data set had many more data points and using a batch size of 64 had a negligible impact on performance while slowing down the training time. The training seemed to plateau around the 15th Epoch.
+
+I used the Adam Optimizer instead of the traditional Gradient Descent Optimizer. Although the Adam Optimizer is more computationally intensive, it has the advantage of implementing momentum (moving averages of parameters), which allows the optimizer to converge faster with larger step sizes. I used a learning rate of 0.001. Any deviation from this learning rate seemed to hinder the  validation accuracy. I relied mostly on the Adam Optimizer to converge the parameters appropriately.
 
 ####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 My final model results were:
-* training set accuracy of ?
-* validation set accuracy of ? 
-* test set accuracy of ?
+* training set accuracy of 100%
+* validation set accuracy of 99.1% 
+* test set accuracy of 93.8%
 
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
@@ -125,11 +128,11 @@ If an iterative approach was chosen:
 * Which parameters were tuned? How were they adjusted and why?
 * What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
 
-If a well known architecture was chosen:
-* What architecture was chosen?
-* Why did you believe it would be relevant to the traffic sign application?
-* How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
- 
+My initial model was based on what I learned in the LeNet lab. As such, I stuck with the LeNet-5 architecture on my first run-through which provided approximately 91% validation set accuracy. The first architecture included 2x Convolution, 2x Max Pooling, and 3x Fully Connected layers. Normalizing and converting my training set to grayscale bumped up the validation accuracy to approximately 94%.
+
+The next iteration was mostly spent tuning hyperparameters like Epoch Size, Batch Size, and learning rate. I learned that the number of Epochs past 25 had very little gain on validation accuracy, but reducing the batch size actually did slightly improve my accuracy by ~1%. Tuning the learning rate away from 0.001 only caused my model to diverge and become less accurate so I mostly left that alone. It seemed that I needed to take other steps to improve my model past 94%.
+
+That is when I turned to dropout. For a while, I felt as if dropout wasn't doing anything to help with improving the validation accuracy. In some iterations, while tuning the keep_prob hyperparameter, it seemed as if lowering the keep_prob parameter caused my model more grief than improvement. That's when I decided to augment my dataset. After augmentation and dramatically increasing the size of the dataset is when dropout really started to shine. I jumped from a 94% validation accuracy to a ~98% validation accuracy. Re-implementing Dropout on the augmented dataset caused the validation accuracy to jump up another percentage point to 99.1%-99.2% It was at this point that I became satisfied with the model's training.
 
 ###Test a Model on New Images
 
@@ -137,42 +140,70 @@ If a well known architecture was chosen:
 
 Here are five German traffic signs that I found on the web:
 
-![alt text][image4] ![alt text][image5] ![alt text][image6] 
-![alt text][image7] ![alt text][image8]
+![](https://github.com/emiranda927/CarND-Traffic-Sign-Classifier/blob/master/Visualizations/DownloadedTrafficSigns.png) 
 
-The first image might be difficult to classify because ...
+I chose these images because I felt like they were the most similar to what the dataset had. My biggest concern was the 3rd image: the no passing sign. The picture seemed to be taken at dusk and had a weird light artifact in the bottom corner of the image. Otherwise, I felt these images were very "well behaved" and should be easily classified by the model.
 
 ####2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
 
 Here are the results of the prediction:
 
-| Image			        |     Prediction	        					| 
-|:---------------------:|:---------------------------------------------:| 
-| Stop Sign      		| Stop sign   									| 
-| U-turn     			| U-turn 										|
-| Yield					| Yield											|
-| 100 km/h	      		| Bumpy Road					 				|
-| Slippery Road			| Slippery Road      							|
+| Image			        |     Prediction		| 
+|:---------------------:|:---------------------:| 
+| Speed Limit (30 kph)	| Speed Limit (30 kph)	| 
+| Right of Way 			| Right of Way			|
+| No Passing			| No Passing			|
+| Stop Sign	      		| Stop Sign				|
+| Speed Limit (70 kph)	| Speed Limit (70 kph)	|
 
 
-The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of ...
+The model was able to correctly guess 5 of the 5 traffic signs, which gives an accuracy of 100%. I believe this is inline with the test accuracy of 93.8% simply because of how well-behaved the images I chose were. If a more challenging image was used in place of the stop sign, for example, the classifier accuracy could have dropped to 80%. In fact, I tried just that by introducing a "No Entry" sign (see below) that was positioned behind another sign in place of the stop sign and the classifier was not able to predict it correctly.
+
+![] (https://github.com/emiranda927/CarND-Traffic-Sign-Classifier/blob/master/no_entry.png)
+
+The classifier though the entry sign was most likely a "Yield Sign", which is triangular in shape. Because the No-Entry sign is behind a triangular sign, this introduces an interesting problem for the classifier. Namely, how do we classify an image in this situation if it can fool the classifier into thinking it has a different shape? That is one limitation and difficulty I encountered while doing this excercise.
 
 ####3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
 The code for making predictions on my final model is located in the 11th cell of the Ipython notebook.
 
-For the first image, the model is relatively sure that this is a stop sign (probability of 0.6), and the image does contain a stop sign. The top five soft max probabilities were
+For all the images, the model was completely confident that it chose the correct image (probability of 1.0).
 
-| Probability         	|     Prediction	        					| 
-|:---------------------:|:---------------------------------------------:| 
-| .60         			| Stop sign   									| 
-| .20     				| U-turn 										|
-| .05					| Yield											|
-| .04	      			| Bumpy Road					 				|
-| .01				    | Slippery Road      							|
+The top 5 classes predicted by the classifier for each image (softmax probabilities) are:
 
+Actual Sign=No passing - Softmax Prob=No passing (w/ 100.0% confidence)
+Actual Sign=No passing - Softmax Prob=Speed limit (20km/h) (w/ 0.0% confidence)
+Actual Sign=No passing - Softmax Prob=Speed limit (30km/h) (w/ 0.0% confidence)
+Actual Sign=No passing - Softmax Prob=Speed limit (50km/h) (w/ 0.0% confidence)
+Actual Sign=No passing - Softmax Prob=Speed limit (60km/h) (w/ 0.0% confidence)
 
-For the second image ... 
+Actual Sign=Stop - Softmax Prob=Stop (w/ 100.0% confidence)
+Actual Sign=Stop - Softmax Prob=Keep right (w/ 0.0% confidence)
+Actual Sign=Stop - Softmax Prob=Speed limit (120km/h) (w/ 0.0% confidence)
+Actual Sign=Stop - Softmax Prob=No vehicles (w/ 0.0% confidence)
+Actual Sign=Stop - Softmax Prob=Yield (w/ 0.0% confidence)
+
+Actual Sign=Speed limit (70km/h) - Softmax Prob=Speed limit (70km/h) (w/ 100.0% confidence)
+Actual Sign=Speed limit (70km/h) - Softmax Prob=Speed limit (30km/h) (w/ 0.0% confidence)
+Actual Sign=Speed limit (70km/h) - Softmax Prob=Speed limit (80km/h) (w/ 0.0% confidence)
+Actual Sign=Speed limit (70km/h) - Softmax Prob=Stop (w/ 0.0% confidence)
+Actual Sign=Speed limit (70km/h) - Softmax Prob=Speed limit (50km/h) (w/ 0.0% confidence)
+
+Actual Sign=Right-of-way at the next intersection - Softmax Prob=Right-of-way at the next intersection (w/ 100.0% confidence)
+Actual Sign=Right-of-way at the next intersection - Softmax Prob=Beware of ice/snow (w/ 0.0% confidence)
+Actual Sign=Right-of-way at the next intersection - Softmax Prob=Pedestrians (w/ 0.0% confidence)
+Actual Sign=Right-of-way at the next intersection - Softmax Prob=Dangerous curve to the right (w/ 0.0% confidence)
+Actual Sign=Right-of-way at the next intersection - Softmax Prob=Turn right ahead (w/ 0.0% confidence)
+
+Actual Sign=Speed limit (30km/h) - Softmax Prob=Speed limit (30km/h) (w/ 100.0% confidence)
+Actual Sign=Speed limit (30km/h) - Softmax Prob=Speed limit (120km/h) (w/ 0.0% confidence)
+Actual Sign=Speed limit (30km/h) - Softmax Prob=Roundabout mandatory (w/ 0.0% confidence)
+Actual Sign=Speed limit (30km/h) - Softmax Prob=Speed limit (60km/h) (w/ 0.0% confidence)
+Actual Sign=Speed limit (30km/h) - Softmax Prob=Speed limit (50km/h) (w/ 0.0% confidence)
+
+I should emphasize here that this was not the case the entire time. As I iterated through improving my model, I started with a 20% classification accuracy, moved up to 40%, then 60%, than 80% and finally 100% accuracy. The softmax probabilties were also not always 100% confidence. For example, the classifier often classified he 70 km/h traffic sign as a 30 km/h traffic sign with 75% confidence. The second softmax probability for this case was the correct prediction of a 70 km/h traffic sign with ~24% probability.
+
+Augmenting the dataset to the extent that I did is what ultimately pushed the performance of these additional images to the 100% mark.
 
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
 ####1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
