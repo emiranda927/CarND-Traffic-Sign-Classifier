@@ -153,38 +153,33 @@ The code for making predictions on my final model is located in the 11th cell of
 For all the images, the model was completely confident that it chose the correct image (probability of 1.0).
 
 The top 5 classes predicted by the classifier for each image (softmax probabilities) are:
-| Image			        |     Softmax Probability					| 
-|:---------------------:|:-----------------------------------------:|
-|No passing				|No passing (w/ 100.0% confidence)			|
-|No Passing				|Speed limit (20km/h) (w/ 0.0% confidence)	|
-|No passing				|Speed limit (30km/h) (w/ 0.0% confidence)	|
-|No passing				|Speed limit (50km/h) (w/ 0.0% confidence)	|
-|No passing				|Speed limit (60km/h) (w/ 0.0% confidence)	|
-|:---------------------:|:-----------------------------------------:|
-|Stop					|Stop (w/ 100.0% confidence)				|
-|Stop					|Keep right (w/ 0.0% confidence)			|
-|Stop					|Speed limit (120km/h) (w/ 0.0% confidence)	|
-|Stop					|No vehicles (w/ 0.0% confidence)			|
-|Stop					|Yield (w/ 0.0% confidence)					|
-|:---------------------:|:-----------------------------------------:|
-|Speed limit (70km/h)	|Speed limit (70km/h) (w/ 100.0% confidence)|
-|Speed limit (70km/h)	|Speed limit (30km/h) (w/ 0.0% confidence)	|
-|Speed limit (70km/h)	|Speed limit (80km/h) (w/ 0.0% confidence)	|
-|Speed limit (70km/h)	|Stop (w/ 0.0% confidence)					|
-|Speed limit (70km/h)	|Speed limit (50km/h) (w/ 0.0% confidence)	|
-|:---------------------:|:-----------------------------------------:|
-|Right-of-way			|Right-of-way (w/ 100.0% confidence)		|
-|Right-of-way			|Beware of ice/snow (w/ 0.0% confidence)	|
-|Right-of-way			|Pedestrians (w/ 0.0% confidence)			|
-|Right-of-way			|Dangerous curve-right (w/ 0.0% confidence)	|
-|Right-of-way			|Turn right ahead (w/ 0.0% confidence)		|
-|:---------------------:|:-----------------------------------------:|
-|Speed limit (30km/h)	|Speed limit (30km/h) (w/ 100.0% confidence)|
-|Speed limit (30km/h)	|Speed limit (120km/h) (w/ 0.0% confidence)	|
-|Speed limit (30km/h)	|Roundabout mandatory (w/ 0.0% confidence)	|
-|Speed limit (30km/h)	|Speed limit (60km/h) (w/ 0.0% confidence)	|
-|Speed limit (30km/h)	|Speed limit (50km/h) (w/ 0.0% confidence)	|
-|:---------------------:|:-----------------------------------------:|
+| Image			        |     Softmax Probability						| 
+|:---------------------:|:---------------------------------------------:|
+| No passing			| No passing (w/ 100.0% confidence)				|
+| No Passing			| Speed limit (20km/h) (w/ 0.0% confidence)		|
+| No passing			| Speed limit (30km/h) (w/ 0.0% confidence)		|
+| No passing			| Speed limit (50km/h) (w/ 0.0% confidence)		|
+| No passing			| Speed limit (60km/h) (w/ 0.0% confidence)		|
+| Stop					| Stop (w/ 100.0% confidence)					|
+| Stop					| Keep right (w/ 0.0% confidence)				|
+| Stop					| Speed limit (120km/h) (w/ 0.0% confidence)	|
+| Stop					| No vehicles (w/ 0.0% confidence)				|
+| Stop					| Yield (w/ 0.0% confidence)					|
+| Speed limit (70km/h)	| Speed limit (70km/h) (w/ 100.0% confidence)	|
+| Speed limit (70km/h)	| Speed limit (30km/h) (w/ 0.0% confidence)		|
+| Speed limit (70km/h)	| Speed limit (80km/h) (w/ 0.0% confidence)		|
+| Speed limit (70km/h)	| Stop (w/ 0.0% confidence)						|
+| Speed limit (70km/h)	| Speed limit (50km/h) (w/ 0.0% confidence)		|
+| Right-of-way			| Right-of-way (w/ 100.0% confidence)			|
+| Right-of-way			| Beware of ice/snow (w/ 0.0% confidence)		|
+| Right-of-way			| Pedestrians (w/ 0.0% confidence)				|
+| Right-of-way			| Dangerous curve-right (w/ 0.0% confidence)	|
+| Right-of-way			| Turn right ahead (w/ 0.0% confidence)			|
+| Speed limit (30km/h)	| Speed limit (30km/h) (w/ 100.0% confidence)	|
+| Speed limit (30km/h)	| Speed limit (120km/h) (w/ 0.0% confidence)	|
+| Speed limit (30km/h)	| Roundabout mandatory (w/ 0.0% confidence)		|
+| Speed limit (30km/h)	| Speed limit (60km/h) (w/ 0.0% confidence)		|
+| Speed limit (30km/h)	| Speed limit (50km/h) (w/ 0.0% confidence)		|
 
 I should emphasize here that this was not the case the entire time. As I iterated through improving my model, I started with a 20% classification accuracy, moved up to 40%, then 60%, than 80% and finally 100% accuracy. The softmax probabilties were also not always 100% confidence. For example, the classifier often classified he 70 km/h traffic sign as a 30 km/h traffic sign with 75% confidence. The second softmax probability for this case was the correct prediction of a 70 km/h traffic sign with ~24% probability.
 
