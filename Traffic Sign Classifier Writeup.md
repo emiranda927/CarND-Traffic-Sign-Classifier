@@ -153,8 +153,9 @@ The code for making predictions on my final model is located in the 11th cell of
 For all the images, the model was completely confident that it chose the correct image (probability of 1.0).
 
 The top 5 classes predicted by the classifier for each image (softmax probabilities) are:
-| Image			        |     Softmax Probability						| 
-|:---------------------:|:---------------------------------------------:|
+
+| Image			        |     Softmax Probability (% Confidence)		|
+|:----------------------|:---------------------------------------------:|
 | No passing			| No passing (w/ 100.0% confidence)				|
 | No Passing			| Speed limit (20km/h) (w/ 0.0% confidence)		|
 | No passing			| Speed limit (30km/h) (w/ 0.0% confidence)		|
