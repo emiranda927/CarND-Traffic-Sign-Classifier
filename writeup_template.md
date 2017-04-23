@@ -54,7 +54,7 @@ I used the pandas and numpy libraries (.shape and np.unique) to calculate summar
 
 Here is an exploratory visualization of the data set. It is a bar chart showing how the data ...
 
-[image1]: ./Visualizations/Original_DataSet_Vis.png "Dataset Frequency Distribution"
+![]({{site.baseurl}}/CarND-Traffic-Sign-Classifier/Visualizations/Original_DataSet_Vis.png)
 
 ###Design and Test a Model Architecture
 
